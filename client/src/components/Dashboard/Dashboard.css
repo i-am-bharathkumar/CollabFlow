@@ -158,3 +158,9 @@
 .activity-message {
   flex: 1;
 }
+
+.ms-3{
+  position: relative;
+  top: -530px;
+  right: -1000px;
+}

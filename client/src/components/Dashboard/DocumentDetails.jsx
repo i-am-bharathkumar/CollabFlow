@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getDocumentById, updateDocument, deleteDocument } from "../../services/documentService";
 import { io } from 'socket.io-client';
+import './Dashboard.css'
 
 const DocumentDetails = () => {
     const socket = io('http://localhost:5000');
@@ -113,7 +114,7 @@ const DocumentDetails = () => {
 
             <div className="mt-3">
                 <button className="btn btn-primary" onClick={handleUpdate}>Update Document</button>
-                <button className="btn btn-danger ms-2" onClick={handleDelete}>Delete Document</button>
+                <button className="btn btn-danger ms-3" onClick={handleDelete}>Delete Document</button>
             </div>
         </div>
     );
