@@ -1,53 +1,38 @@
-// backend/models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const UserSchema = new mongoose.Schema({
-  username: {
+const userSchema = new mongoose.Schema({
+  name: {
     type: String,
     required: true,
-    unique: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 50
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6
-  },
-  documents: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Document'
-  }]
-}, {
-  timestamps: true
+  password: { 
+    type: String, 
+    required: true 
+  }
 });
 
-// Password hashing middleware
-UserSchema.pre('save', async function(next) {
+// ✅ Hash password only if it’s modified or new
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  
+
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 
-// Method to compare password
-UserSchema.methods.comparePassword = async function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+// ✅ Optional: Compare password method for login
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', userSchema);

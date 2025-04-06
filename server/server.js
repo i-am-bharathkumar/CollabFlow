@@ -1,57 +1,61 @@
-// backend/server.js
 const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+const documentRoutes = require('./routes/docRoutes');
+const cors = require('cors');
+const { Server } = require('socket.io');
+const http = require('http');
+const userRoutes = require('./routes/user');
 
-// Load environment variables
 dotenv.config();
+connectDB();
 
-// Initialize Express app
 const app = express();
 const server = http.createServer(app);
 
-// Connect to MongoDB
-connectDB();
+// Configure CORS for HTTP requests
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
+}));
 
-// Middleware
-app.use(cors());
+// Socket.io setup for real-time collaboration
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173', 
+        methods: ['GET', 'POST']
+    }
+});
+
+// Middleware and routes
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Routes
-const authRoutes = require('./routes/authRoutes');
-const docRoutes = require('./routes/docRoutes');
-
 app.use('/api/auth', authRoutes);
-app.use('/api/documents', docRoutes);
+app.use('/api/documents', documentRoutes);
+app.use('/api/user', userRoutes);
 
-// Socket.io setup
-const io = socketIo(server, {
-  cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
-  }
+//connection happens when a io called made from socket.io client
+io.on('connection', (socket) => {
+    console.log('New WebSocket connection');
+
+    //user on documentdetails - useuseffect
+    socket.on('joinDocument', (documentId) => {
+        socket.join(documentId);
+        console.log(`User joined document ${documentId}`);
+    });
+    // user when changes the input feild values
+    socket.on('documentUpdate', ({ documentId, title, content }) => {
+        socket.to(documentId).emit('receiveUpdate', { title, content });
+    });
+
+    //this is not used by the frontend
+    socket.on('sendMessage', ({ documentId, message }) => {
+        socket.to(documentId).emit('receiveMessage', message);
+    });
 });
 
-// Initialize socket handlers
-require('./sockets/collabSocket')(io);
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'production' ? {} : err.stack
-  });
-});
-
-// Server configuration
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
-
-module.exports = server;
