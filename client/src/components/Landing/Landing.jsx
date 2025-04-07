@@ -12,9 +12,9 @@ const Landing = () => {
                 <div className="container">
                     <div className="row align-items-center">
                         <div className="col-lg-6 hero-content fade-in">
-                            <h1 className="display-4">Welcome to CollabTool</h1>
+                            <h1 className="display-4">Welcome to CollabFlow</h1>
                             <p className="lead">
-                                CollabTool is your go-to platform for seamless real-time collaboration. 
+                                CollabFlow is your go-to platform for seamless real-time collaboration. 
                                 Work together on documents, share ideas, and communicate effortlessly with your team.
                             </p>
                             <div className="cta-buttons">
@@ -64,7 +64,7 @@ const Landing = () => {
                 <div className="container">
                     <div className="row justify-content-center mb-5">
                         <div className="col-lg-8 text-center fade-in">
-                            <h2 className="section-title">How CollabTool Works</h2>
+                            <h2 className="section-title">How CollabFlow Works</h2>
                             <p className="section-description">
                                 Our simple yet powerful workflow makes collaboration effortless
                             </p>
@@ -115,7 +115,7 @@ const Landing = () => {
                             <div className="testimonial-card">
                                 <div className="testimonial-text">
                                     <i className="fas fa-quote-left quote-icon"></i>
-                                    <p>CollabTool has transformed how our design team works together. The simultaneous editing feature is a game-changer!</p>
+                                    <p>CollabFlow has transformed how our design team works together. The simultaneous editing feature is a game-changer!</p>
                                 </div>
                                 <div className="testimonial-author">
                                     <div className="testimonial-avatar">

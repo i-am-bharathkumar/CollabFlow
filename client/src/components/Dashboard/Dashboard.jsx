@@ -21,7 +21,7 @@ const Dashboard = () => {
                 // console.log(data)
             } catch (error) {
                 console.error('Failed to fetch documents:', error);
-                navigate('/');
+                navigate('/register');
             }
         };
         fetchDocuments();

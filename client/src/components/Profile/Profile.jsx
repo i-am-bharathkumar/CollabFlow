@@ -185,16 +185,36 @@ const Profile = () => {
         formData.append('avatar', avatarFile);
       }
       
-      await updateUser(formData);
-      setSuccess('Profile updated successfully!');
-      profileFormRef.current.reset();
-    } catch (err) {
-      setError(err.message || 'Failed to update profile');
-    } finally {
-      setLoading(false);
-    }
-  };
+await updateUser(formData);
+  setSuccess('Profile updated successfully!');
 
+  // Update localStorage with latest user info
+  const updatedUser = {
+    ...currentUser,
+    ...profileData,
+    avatarUrl: avatarPreview || currentUser.avatarUrl,
+  };
+  localStorage.setItem('user', JSON.stringify(updatedUser));
+  window.dispatchEvent(new Event('userUpdated'));
+
+  // Reset form
+  setProfileData({
+    name: '',
+    email: '',
+    phone: '',
+    bio: '',
+    location: '',
+    website: ''
+  });
+  setAvatarFile(null);
+  setAvatarPreview(null);
+  profileFormRef.current.reset();
+} catch (err) {
+  setError(err.message || 'Failed to update profile');
+} finally {
+  setLoading(false);
+}
+  }
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     setError('');

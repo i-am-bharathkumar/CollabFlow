@@ -15,6 +15,12 @@
   background-color: white;
 }
 
+
+.btn-lg{
+  position: relative;
+  bottom: -10px;
+}
+
 /* Global Landing Styles */
 .landing-container {
   overflow-x: hidden;

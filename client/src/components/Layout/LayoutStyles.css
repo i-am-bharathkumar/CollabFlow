@@ -160,6 +160,7 @@ html {
 /* Login Button Animation */
 .btn-animated {
   position: relative;
+  bottom: -30px;
   overflow: hidden;
 }
 
@@ -480,6 +481,13 @@ html {
   .footer-bottom-link {
     margin: 0 0.75rem;
   }
+
+  .btn-animated {
+    position: relative;
+    top: -2px;
+    overflow: hidden;
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {
@@ -493,5 +501,32 @@ html {
   
   .social-icons {
     justify-content: center;
+  }
+
+  .btn-animated {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer {
+    padding: 3rem 0 2rem;
+  }
+  
+  .footer-heading {
+    margin-top: 1.5rem;
+  }
+  
+  .social-icons {
+    justify-content: center;
+  }
+
+  .btn-animated {
+    position: relative;
+    top: -2px;
+    overflow: hidden;
+    text-align: center;
   }
 }

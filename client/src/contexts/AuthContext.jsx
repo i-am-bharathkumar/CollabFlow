@@ -49,8 +49,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await axios.post('/api/auth/login', { email, password });
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
 
       setCurrentUser(data.user);
       setToken(data.token);
@@ -73,35 +73,27 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
   };
 
-  const updateUser = async (formData) => {
-    const token = localStorage.getItem('token'); // Assuming auth token is stored here
-  
+  const updateUser = async (updatedData) => {
     try {
-      const res = await fetch('http://localhost:5000/api/user/update', {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const token = localStorage.getItem('token'); // 🔍 is this returning a valid token?
   
-      const data = await res.json();
-  
-      if (!data.success) {
-        throw new Error(data.message || 'Failed to update user');
-      }
-  
-      // ✅ Save updated user in state and localStorage
-      localStorage.setItem('user', JSON.stringify(data.user));
-      setCurrentUser(data.user);
-  
-      return data.user;
+      const response = await axios.put(
+        'http://localhost:5000/api/user/update',
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
     } catch (error) {
       console.error('Update error:', error);
       throw error;
     }
-  };    
-
+  };
+  
+  
   const contextValue = useMemo(() => ({
     currentUser,
     token,

@@ -7,23 +7,32 @@ const Navbar = () => {
     const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
-    
-    const userString = localStorage.getItem('user');
-    const user = userString ? JSON.parse(userString) : null;
-    
-    // Handle scroll effect for navbar
+
+    const [user, setUser] = useState(() => {
+        const userString = localStorage.getItem('user');
+        return userString ? JSON.parse(userString) : null;
+    });
+
+    // ✅ This useEffect listens for the custom "userUpdated" event
+    useEffect(() => {
+        const handleUserUpdate = () => {
+            const updatedUser = JSON.parse(localStorage.getItem('user'));
+            setUser(updatedUser);
+        };
+
+        window.addEventListener('userUpdated', handleUserUpdate);
+        return () => window.removeEventListener('userUpdated', handleUserUpdate);
+    }, []);
+
+    // ✅ Your scroll effect (already present)
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 50) {
-                setScrolled(true);
-            } else {
-                setScrolled(false);
-            }
+            setScrolled(window.scrollY > 50);
         };
-        
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
 
     const handleLogout = () => {
         // Add animation before logout
@@ -90,7 +99,8 @@ const Navbar = () => {
                                     aria-expanded="false"
                                 >
                                     <div className="avatar-circle">
-                                        {user.username.charAt(0).toUpperCase()}
+                                    {user?.username?.charAt(0)?.toUpperCase() || 'U'}
+
                                     </div>
                                     <span className="ms-2">{user.username}</span>
                                 </a>
@@ -117,7 +127,7 @@ const Navbar = () => {
                     ) : (
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <Link className="nav-link btn-animated" to="/login">Login</Link>
+                                <Link className="nav-link btn-animated sign-up-btn" to="/login">Login</Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link btn btn-primary sign-up-btn" to="/register">Register</Link>
